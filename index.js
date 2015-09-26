@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const Relay = require('react-relay');
 
 class Item extends React.Component {
   render() {
@@ -14,18 +15,49 @@ class Item extends React.Component {
   }
 }
 
-const store = {
-  item: {
-    id: '1337',
-    url: 'http://google.com',
-    title: 'Google',
-    score: 100,
-    by: {
-      id: 'clay'
+// Use a higher-order component to wrap our Item component with Relay goodness
+// like saying we need to fill in the component's ‘store’ prop with the data
+// described. But that's not saying _how_ to fetch the data, just what we need.
+Item = Relay.createContainer(Item, {
+  fragments: {
+    store: () => Relay.QL`
+      fragment on HackerNewsAPI {
+        item(id: 8863) {
+          by {
+            id
+          },
+          score,
+          title,
+          url,
+        }
+      }
+    `
+  },
+});
+
+// Set up a Relay.Route which maps our various subqueries to a ‘root query’ for
+// the actual data requests.
+class HackerNewsRoute extends Relay.Route {
+  static routeName = 'HackerNewsRoute';
+  static queries = {
+    store: (Component) => {
+      // Component is our Item
+      return Relay.QL`
+        query root {
+          hn { ${Component.getFragment('store')} },
+        }
+      `
     }
-  }
-};
+  };
+}
+
+// Point to our GraphQL API endpoint
+Relay.injectNetworkLayer(
+  new Relay.DefaultNetworkLayer('http://www.GraphQLHub.com/graphql')
+);
 
 const mountNode = document.getElementById('container');
-const rootComponent = <Item store={store} />
+// The Relay.RootContainer is the top-level component that kicks off a query
+// given a component hierarchy and route to follow
+const rootComponent = <Relay.RootContainer Component={Item} route={new HackerNewsRoute()} />
 ReactDOM.render(rootComponent, mountNode);
