@@ -17,7 +17,7 @@ class Item extends React.Component {
 
 class TopItems extends React.Component {
   render() {
-    const items = this.props.store.topStories.map(
+    const items = this.props.store.stories.map(
       (store, idx) => <Item store={store} key={idx} />
     );
     return (
@@ -48,10 +48,13 @@ Item = Relay.createContainer(Item, {
 });
 
 TopItems = Relay.createContainer(TopItems, {
+  initialVariables: {
+    storyType: "top",
+  },
   fragments: {
     store: () => Relay.QL`
       fragment on HackerNewsAPI {
-        topStories { ${Item.getFragment('store')} },
+        stories(storyType: $storyType) { ${Item.getFragment('store')} },
       }
     `,
   },
