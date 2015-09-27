@@ -16,6 +16,22 @@ class Item extends React.Component {
 }
 
 class TopItems extends React.Component {
+  static defaultProps = {
+    // Stub in `store` that's injected by a higher-order component.
+    store: {
+      stories: [],
+    },
+    // Stub in `relay` that's injected by a higher-order component, Relay
+    // Container.
+    //
+    // See https://facebook.github.io/relay/docs/guides-containers.html
+    relay: {
+      variables: {
+      },
+      setVariables: function(_) {},
+    },
+  };
+
   render() {
     const items = this.props.store.stories.map(
       (store, idx) => <Item store={store} key={idx} />
