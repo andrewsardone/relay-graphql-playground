@@ -23,7 +23,7 @@ class TopItems extends React.Component {
     const currentStoryType = (this.state && this.state.storyType) || this.props.relay.variables;
     return (
       <div>
-        <select onChange={this._onChange.bind(this)} value={currentStoryType}>
+        <select onChange={this._onChange} value={currentStoryType}>
           <option value="top">Top</option>
           <option value="new">New</option>
           <option value="ask">Ask HN</option>
@@ -34,7 +34,7 @@ class TopItems extends React.Component {
     );
   }
 
-  _onChange(event) {
+  _onChange = (event) => {
     const storyType = event.target.value;
     this.setState({ storyType });
     this.props.relay.setVariables({ storyType });
