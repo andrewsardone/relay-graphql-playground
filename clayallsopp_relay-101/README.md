@@ -10,3 +10,9 @@ npm install
 npm start
 # Go to http://localhost:8080/
 ```
+
+## TODOs
+
+- [ ] Add loading state
+- [ ] Add error state
+- [ ] Add react-native implementation
