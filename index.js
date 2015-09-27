@@ -4,12 +4,25 @@ const Relay = require('react-relay');
 
 class Item extends React.Component {
   render() {
-    const item = this.props.store.item;
+    const item = this.props.store;
 
     return (
       <div>
         <h1><a href={item.url}>{item.title}</a></h1>
         <h2>{item.score} – {item.by.id}</h2>
+      </div>
+    );
+  }
+}
+
+class TopItems extends React.Component {
+  render() {
+    const items = this.props.store.topStories.map(
+      (store, idx) => <Item store={store} key={idx} />
+    );
+    return (
+      <div>
+        {items}
       </div>
     );
   }
@@ -21,17 +34,26 @@ class Item extends React.Component {
 Item = Relay.createContainer(Item, {
   fragments: {
     store: () => Relay.QL`
-      fragment on HackerNewsAPI {
-        item(id: 8863) {
-          by {
-            id
-          },
-          score,
-          title,
-          url,
-        }
+      fragment on HackerNewsItem {
+        by {
+          id
+        },
+        id,
+        score,
+        title,
+        url,
       }
     `
+  },
+});
+
+TopItems = Relay.createContainer(TopItems, {
+  fragments: {
+    store: () => Relay.QL`
+      fragment on HackerNewsAPI {
+        topStories { ${Item.getFragment('store')} },
+      }
+    `,
   },
 });
 
@@ -59,5 +81,5 @@ Relay.injectNetworkLayer(
 const mountNode = document.getElementById('container');
 // The Relay.RootContainer is the top-level component that kicks off a query
 // given a component hierarchy and route to follow
-const rootComponent = <Relay.RootContainer Component={Item} route={new HackerNewsRoute()} />
+const rootComponent = <Relay.RootContainer Component={TopItems} route={new HackerNewsRoute()} />
 ReactDOM.render(rootComponent, mountNode);
