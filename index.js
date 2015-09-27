@@ -20,11 +20,24 @@ class TopItems extends React.Component {
     const items = this.props.store.stories.map(
       (store, idx) => <Item store={store} key={idx} />
     );
+    const currentStoryType = (this.state && this.state.storyType) || this.props.relay.variables;
     return (
       <div>
+        <select onChange={this._onChange.bind(this)} value={currentStoryType}>
+          <option value="top">Top</option>
+          <option value="new">New</option>
+          <option value="ask">Ask HN</option>
+          <option value="show">Show HN</option>
+        </select>
         {items}
       </div>
     );
+  }
+
+  _onChange(event) {
+    const storyType = event.target.value;
+    this.setState({ storyType });
+    this.props.relay.setVariables({ storyType });
   }
 }
 
