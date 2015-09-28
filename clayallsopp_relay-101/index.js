@@ -16,6 +16,28 @@ class Item extends React.Component {
 }
 
 class TopItems extends React.Component {
+  // This `defaultProps` “stubbing” is only a stopgap, or at least a
+  // demonstration of the coupling we have between TopItems and the Relay
+  // Container. The pros of this coupling are the easy and slick out-of-the-box
+  // data fetching with only a couple spots having knowledge of the wrapping
+  // container. The con is that same coupling, but that's probably more
+  // academic than anything.
+  //
+  // If this coupling bothers you (and at first glance it bothers me), you
+  // could introduce yet-another wrapper via a pair of [smart & dumb
+  // components][sd]. Some sort of `TopItemsRelay` component that interacts
+  // with all of the `relay` property stuff, leaving the `TopItem` component
+  // solely responsible for rendering based on its given props. But this seems
+  // like overkill to me – lots of nesting for a minor benefit. What could be
+  // interesting is the ability to implement arbitrary Component functions
+  // (like `render()`) within the [RelayContainer][rc]. You could then get that
+  // additional smart/dumb separation in the spot where you're already
+  // augmenting a higher-order component.
+  //
+  // Food for thought…
+  //
+  // [sd]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
+  // [rc]: https://github.com/facebook/relay/blob/d6ee51f5851a05f3d29915a6972318971e03daca/src/container/RelayContainer.js
   static defaultProps = {
     // Stub in `store` that's injected by a higher-order component.
     store: {
