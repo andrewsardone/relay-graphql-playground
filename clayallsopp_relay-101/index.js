@@ -4,7 +4,7 @@ const Relay = require('react-relay');
 
 class Item extends React.Component {
   render() {
-    const item = this.props.store;
+    const item = this.props.item;
 
     return (
       <div>
@@ -34,7 +34,7 @@ class TopItems extends React.Component {
 
   render() {
     const items = this.props.store.stories.map(
-      (store, idx) => <Item store={store} key={idx} />
+      (item, idx) => <Item item={item} key={idx} />
     );
     const currentStoryType = (this.state && this.state.storyType) || this.props.relay.variables;
     return (
@@ -62,7 +62,7 @@ class TopItems extends React.Component {
 // described. But that's not saying _how_ to fetch the data, just what we need.
 Item = Relay.createContainer(Item, {
   fragments: {
-    store: () => Relay.QL`
+    item: () => Relay.QL`
       fragment on HackerNewsItem {
         by {
           id
@@ -83,7 +83,7 @@ TopItems = Relay.createContainer(TopItems, {
   fragments: {
     store: () => Relay.QL`
       fragment on HackerNewsAPI {
-        stories(storyType: $storyType) { ${Item.getFragment('store')} },
+        stories(storyType: $storyType) { ${Item.getFragment('item')} },
       }
     `,
   },
